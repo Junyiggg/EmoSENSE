@@ -185,3 +185,7 @@ projection/*.pkl
 projection/*.pth
 projection/*.pt
 docs/*.pth
+
+# Local release packages generated for GitHub Releases.
+emosense-projection-*.zip
+emosense-projection-*.zip.sha256

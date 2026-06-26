@@ -156,7 +156,24 @@ docs/
 └── Clip_emotion_classifier.pth
 ```
 
-You can obtain `projection/*` by running Step 2. Place `docs/Clip_emotion_classifier.pth` under `docs/`; publish or download it through the project [GitHub Releases](https://github.com/Junyiggg/EmoSENSE/releases) if you do not keep it locally.
+Download the pretrained projection artifacts from GitHub Releases and extract them at the repository root:
+
+- Release page: [Projection Artifacts v1.0](https://github.com/Junyiggg/EmoSENSE/releases/tag/projection-v1.0)
+- Direct download: [emosense-projection-v1.zip](https://github.com/Junyiggg/EmoSENSE/releases/download/projection-v1.0/emosense-projection-v1.zip)
+- SHA256: [emosense-projection-v1.zip.sha256](https://github.com/Junyiggg/EmoSENSE/releases/download/projection-v1.0/emosense-projection-v1.zip.sha256)
+
+```bash
+curl -L -o emosense-projection-v1.zip \
+  https://github.com/Junyiggg/EmoSENSE/releases/download/projection-v1.0/emosense-projection-v1.zip
+
+curl -L -o emosense-projection-v1.zip.sha256 \
+  https://github.com/Junyiggg/EmoSENSE/releases/download/projection-v1.0/emosense-projection-v1.zip.sha256
+
+sha256sum -c emosense-projection-v1.zip.sha256
+unzip -o emosense-projection-v1.zip
+```
+
+Place `docs/Clip_emotion_classifier.pth` under `docs/` if you use the emotion reward classifier locally.
 
 ## 🧭 Step 2. Train the Sentiment-Semantic Mapping Space
 
