@@ -25,12 +25,12 @@ EmoSENSE/
 │   ├── config.py          # emotion order, VAD vertices, and runtime defaults
 │   ├── mapping.py         # BGE prototypes, VAD projection, and corr(e, o)
 │   ├── fuzzy.py           # fuzzy labels, Fi initialization, and stability reward
-│   ├── prompting.py       # Qwen prompt generator and deterministic dry-run prompts
-│   ├── generation.py      # frozen OmniGen image generation wrapper
-│   ├── rewards.py         # CLIPScore and emotion-classifier rewards
-│   ├── rl.py              # hierarchical actor-critic generation pipeline
+│   ├── prompting.py       # prompt generator and prompts
+│   ├── generation.py      # frozen OmniGen image generation
+│   ├── rewards.py         # designed rewards
+│   ├── rl.py              # hierarchical RL generation pipeline
 │   └── cli.py             # train, inspect, and generate commands
-├── OmniGen/               # local OmniGen inference code
+├── OmniGen/               
 ├── scripts/
 │   └── preprocess_emoset.py
 ├── tests/
