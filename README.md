@@ -1,16 +1,16 @@
 # EmoSENSE
 
-Emotional image generation aims to create images that effectively reflect target emotions. A fundamental challenge in this task is the affective gap, which refers to the discrepancy between visual content and emotional states perceived by users.
+Emotional image generation aims to create images that effectively reflect target emotions. A fundamental challenge in this task is the affective gap, which refers to the discrepancy between visual content and emotional states perceived by users. We propose **EmoSENSE**, a sentiment-semantic knowledge modeling framework with hierarchical fuzzy reinforcement learning for emotional image generation. 
 
 <p align="center">
   <img src="assets/demo.png" alt="EmoSENSE emotional image generation examples" width="78%">
 </p>
 
-We propose **EmoSENSE**, a sentiment-semantic knowledge modeling framework with hierarchical fuzzy reinforcement learning for emotional image generation. To improve generalization on uncommon emotion-object pairs, EmoSENSE projects emotions and objects into a unified VAD space and computes sentiment-semantic correlation with a prototype network. To improve controllability over emotion-related visual appearance, EmoSENSE refines brightness and colorfulness fuzzy memberships with hierarchical reinforcement learning before building the final generation prompt.
+
 
 ## Overview
 
-Overview of our proposed method, mainly consisting of high-level and low-level modules. The high-level module receives an emotion-object pair from user input. The proposed prototype maps the object into the VAD space with a prototype network to compute sentiment-semantic correlation. Then, the high-level module selects an initial fuzzy attribute subset and chooses a policy for the low-level module. The low-level module refines this subset by fuzzy membership classification. It produces a detailed attributes matrix and builds a detailed text prompt. This prompt guides a frozen image generation model and generates the final image.
+Overview of our proposed method. The high-level module receives an emotion-object pair from user input. The proposed prototype maps the object into the VAD space with a prototype network to compute sentiment-semantic correlation. Then, the high-level module selects an initial fuzzy attribute subset and chooses a policy for the low-level module. The low-level module refines this subset by fuzzy membership classification. It produces a detailed attributes matrix and builds a detailed text prompt. This prompt guides a frozen image generation model and generates the final image.
 
 <p align="center">
   <img src="assets/framework.png" alt="Overview of the EmoSENSE method" width="100%">
