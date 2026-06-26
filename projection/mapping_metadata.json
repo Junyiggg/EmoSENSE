@@ -1,0 +1,62 @@
+{
+  "emotion_order": [
+    "amusement",
+    "awe",
+    "contentment",
+    "excitement",
+    "anger",
+    "disgust",
+    "fear",
+    "sadness"
+  ],
+  "vad_coordinates": {
+    "amusement": [
+      1.0,
+      0.0,
+      1.0
+    ],
+    "awe": [
+      1.0,
+      1.0,
+      0.0
+    ],
+    "contentment": [
+      1.0,
+      0.0,
+      0.0
+    ],
+    "excitement": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "anger": [
+      0.0,
+      1.0,
+      1.0
+    ],
+    "disgust": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "fear": [
+      0.0,
+      1.0,
+      0.0
+    ],
+    "sadness": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "bge_model_path": "BGE",
+  "sample_count": 32440,
+  "train_count": 29196,
+  "validation_count": 3244,
+  "validation_ratio": 0.1,
+  "random_seed": 42,
+  "embedding_dim": 1024,
+  "frozen_bge": true
+}
