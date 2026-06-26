@@ -16,19 +16,6 @@ Overview of our proposed method. The high-level module receives an emotion-objec
   <img src="assets/framework.png" alt="Overview of the EmoSENSE method" width="100%">
 </p>
 
-## Examples
-
-Qualitative comparison examples from the paper:
-
-<p align="center">
-  <img src="assets/qualitative-comparison.png" alt="Qualitative comparison" width="100%">
-</p>
-
-Same-object emotion control examples:
-
-<p align="center">
-  <img src="assets/same-object.png" alt="Same object comparison" width="100%">
-</p>
 
 ## Repository Layout
 
@@ -269,14 +256,21 @@ python -m emosense.cli generate \
   --device cuda
 ```
 
-## Tests
 
-Step 3 runs the actual generation workflow. The commands below only check installation and core Python modules before heavy model loading.
+## Examples
 
-```bash
-python -m unittest discover -s tests
-python -m emosense.cli --help
-```
+Qualitative comparison examples from the paper:
+
+<p align="center">
+  <img src="assets/qualitative-comparison.png" alt="Qualitative comparison" width="100%">
+</p>
+
+Same-object emotion control examples:
+
+<p align="center">
+  <img src="assets/same-object.png" alt="Same object comparison" width="100%">
+</p>
+
 
 ## Citation
 
