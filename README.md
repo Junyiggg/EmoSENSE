@@ -178,7 +178,7 @@ Place `docs/Clip_emotion_classifier.pth` under `docs/` if you use the emotion re
 ## 🧭 Step 2. Train the Sentiment-Semantic Mapping Space
 
 <p align="center">
-  <img src="assets/training.png" alt="Mapping space training" width="65%">
+  <img src="assets/training.png" alt="Mapping space training" width="50%">
 </p>
 
 Train the BGE prototype centroids and the VAD projection network:
