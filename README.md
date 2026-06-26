@@ -179,26 +179,6 @@ python -m emosense.cli train-mapping \
   --device cuda
 ```
 
-For a quick training smoke test:
-
-```bash
-python -m emosense.cli train-mapping \
-  --annotation-dir "mapping space/annotation" \
-  --output-dir projection_smoke \
-  --bge-model BGE \
-  --epochs 1 \
-  --limit 800 \
-  --device cuda
-```
-
-Inspect one object-emotion pair:
-
-```bash
-python -m emosense.cli inspect \
-  --object "school bus" \
-  --emotion disgust \
-  --device cuda
-```
 
 The output includes `correlation`, `gamma`, the projected object coordinate, and the top-K emotion-specific references with brightness/colorfulness attributes.
 
@@ -219,20 +199,6 @@ python -m emosense.cli generate \
   --device cuda
 ```
 
-If you use ModelScope or Hugging Face cache instead of local folders:
-
-```bash
-python -m emosense.cli generate \
-  --object "cemetery" \
-  --emotion sadness \
-  --output-dir runs/sadness_cemetery \
-  --high-episodes 1 \
-  --low-steps 5 \
-  --inference-steps 50 \
-  --qwen-model Qwen/Qwen2.5-3B-Instruct \
-  --omnigen-model Shitao/OmniGen-v1 \
-  --device cuda
-```
 
 Expected output:
 
@@ -243,17 +209,6 @@ runs/amusement_park/
 ├── ...
 ├── episode_01_rewards.jsonl
 └── summary.json
-```
-
-Use dry-run mode to validate mapping, fuzzy initialization, prompt assembly, and RL updates without loading OmniGen or CLIP:
-
-```bash
-python -m emosense.cli generate \
-  --object "phone" \
-  --emotion awe \
-  --dry-run \
-  --low-steps 2 \
-  --device cuda
 ```
 
 
