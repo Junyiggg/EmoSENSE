@@ -80,11 +80,6 @@ If your PyTorch CUDA build does not match your GPU driver, install the correct P
 pip install torch==2.3.1 torchvision==0.18.1 --index-url https://download.pytorch.org/whl/cu118
 ```
 
-Run a quick import check:
-
-```bash
-python -m unittest discover -s tests
-```
 
 ## 📦 Step 1. Install Required Models and Data
 
