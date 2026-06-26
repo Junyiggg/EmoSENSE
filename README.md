@@ -1,48 +1,64 @@
 # EmoSENSE
 
-**EmoSENSE** is a paper-aligned implementation of sentiment-semantic fuzzy hierarchical reinforcement learning for emotional image generation.
+Emotional image generation aims to create images that effectively reflect target emotions. A fundamental challenge in this task is the affective gap, which refers to the discrepancy between visual content and emotional states perceived by users.
 
-Given an emotion-object pair `(e, o)`, EmoSENSE builds a sentiment-semantic mapping space, retrieves emotion-specific visual attributes, refines fuzzy brightness/colorfulness rules with hierarchical RL, and generates the final image with OmniGen.
+We propose **EmoSENSE**, a sentiment-semantic knowledge modeling framework with hierarchical fuzzy reinforcement learning for emotional image generation. To improve generalization on uncommon emotion-object pairs, EmoSENSE projects emotions and objects into a unified VAD space and computes sentiment-semantic correlation with a prototype network. To improve controllability over emotion-related visual appearance, EmoSENSE refines brightness and colorfulness fuzzy memberships with hierarchical reinforcement learning before building the final generation prompt.
+
+## Overview
+
+Overview of our proposed method, mainly consisting of high-level and low-level modules. The high-level module receives an emotion-object pair from user input. The proposed prototype maps the object into the VAD space with a prototype network to compute sentiment-semantic correlation. Then, the high-level module selects an initial fuzzy attribute subset and chooses a policy for the low-level module. The low-level module refines this subset by fuzzy membership classification. It produces a detailed attributes matrix and builds a detailed text prompt. This prompt guides a frozen image generation model and generates the final image.
 
 <p align="center">
-  <img src="assets/framework.svg" alt="EmoSENSE framework" width="100%">
+  <img src="assets/framework.png" alt="Overview of the EmoSENSE method" width="100%">
 </p>
+
+## Examples
 
 <p align="center">
-  <img src="assets/demo.svg" alt="EmoSENSE demo" width="78%">
+  <img src="assets/demo.png" alt="EmoSENSE emotional image generation examples" width="78%">
 </p>
 
-## Highlights
+Qualitative comparison examples from the paper:
 
-- VAD emotion cube with the paper's eight emotion vertices.
-- Frozen BGE object encoder and MLP projection network for `corr(e, o)`.
-- Top-K emotion-specific reference retrieval for brightness/colorfulness initialization.
-- Low-level fuzzy rule refinement with Actor-Critic reinforcement learning.
-- Qwen prompt generation and frozen OmniGen image generation.
-- Paper defaults: `K=5`, `lambda=0.95`, `512x512`, `guidance_scale=2.5`, `50` inference steps.
+<p align="center">
+  <img src="assets/qualitative-comparison.png" alt="Qualitative comparison" width="100%">
+</p>
+
+Same-object emotion control examples:
+
+<p align="center">
+  <img src="assets/same-object.png" alt="Same object comparison" width="100%">
+</p>
 
 ## Repository Layout
 
 ```text
-emosense/
-  config.py       # emotion order, VAD vertices, runtime defaults
-  mapping.py      # BGE prototypes, VAD projection, corr(e, o)
-  fuzzy.py        # fuzzy labels, Fi initialization, Eq. 13 stability reward
-  prompting.py    # Qwen prompt generator
-  generation.py   # OmniGen wrapper
-  rewards.py      # CLIPScore + emotion confidence reward
-  rl.py           # hierarchical Actor-Critic pipeline
-  cli.py          # command line interface
-OmniGen/          # local OmniGen inference code
-scripts/
-  preprocess_emoset.py
-tests/
-assets/           # README figures
+EmoSENSE/
+├── emosense/
+│   ├── config.py          # emotion order, VAD vertices, and runtime defaults
+│   ├── mapping.py         # BGE prototypes, VAD projection, and corr(e, o)
+│   ├── fuzzy.py           # fuzzy labels, Fi initialization, and stability reward
+│   ├── prompting.py       # Qwen prompt generator and deterministic dry-run prompts
+│   ├── generation.py      # frozen OmniGen image generation wrapper
+│   ├── rewards.py         # CLIPScore and emotion-classifier rewards
+│   ├── rl.py              # hierarchical actor-critic generation pipeline
+│   └── cli.py             # train, inspect, and generate commands
+├── OmniGen/               # local OmniGen inference code
+├── scripts/
+│   └── preprocess_emoset.py
+├── tests/
+├── assets/
+│   ├── framework.png
+│   ├── demo.png
+│   ├── training.png
+│   ├── qualitative-comparison.png
+│   └── same-object.png
+├── prompt.txt
+├── requirements.txt
+└── setup.py
 ```
 
 Large local artifacts are intentionally ignored by Git: `BGE/`, `mapping space/annotation/`, `projection/*.pth`, `projection/*.pt`, `projection/*.pkl`, `docs/*.pth`, `runs/`, and local model caches.
-
----
 
 ## 🧰 Step 0. Clone and Create Environment
 
@@ -69,8 +85,6 @@ Run a quick import check:
 ```bash
 python -m unittest discover -s tests
 ```
-
----
 
 ## 📦 Step 1. Install Required Models and Data
 
@@ -101,12 +115,13 @@ huggingface-cli download BAAI/bge-large-en-v1.5 \
   --local-dir BGE
 ```
 
-### 1.3 Download Qwen
+### 1.3 Download LLM
 
-The paper uses LLaMA3.2-3B for prompt generation. This repository uses Qwen as requested.
+This implementation uses Qwen by default for prompt generation. The paper uses LLaMA3.2-3B, so both model links are listed for reproducibility.
 
-- Hugging Face: [Qwen/Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct)
-- ModelScope: [Qwen/Qwen2.5-3B-Instruct](https://modelscope.cn/models/Qwen/Qwen2.5-3B-Instruct)
+- Qwen Hugging Face: [Qwen/Qwen2.5-3B-Instruct](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct)
+- Qwen ModelScope: [Qwen/Qwen2.5-3B-Instruct](https://modelscope.cn/models/Qwen/Qwen2.5-3B-Instruct)
+- LLaMA Hugging Face: [meta-llama/Llama-3.2-3B-Instruct](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct)
 
 You can let ModelScope cache Qwen automatically at first run, or download it manually:
 
@@ -117,7 +132,7 @@ modelscope download --model Qwen/Qwen2.5-3B-Instruct \
 
 ### 1.4 Download EmoSet
 
-The mapping space is trained from EmoSet annotations with brightness/colorfulness attributes.
+The mapping space is trained from EmoSet annotations with brightness and colorfulness attributes.
 
 - Project page: [EmoSet](https://vcc.tech/EmoSet)
 - Paper: [EmoSet: A Large-scale Visual Emotion Dataset with Rich Attributes](https://arxiv.org/abs/2307.07961)
@@ -136,12 +151,13 @@ Expected output:
 
 ```text
 mapping space/annotation/
-  amusement/*.json
-  awe/*.json
-  ...
-  splits/train.jsonl
-  splits/validation.jsonl
-  preprocess_metadata.json
+├── amusement/*.json
+├── awe/*.json
+├── ...
+├── splits/
+│   ├── train.jsonl
+│   └── validation.jsonl
+└── preprocess_metadata.json
 ```
 
 ### 1.5 Project-Specific Artifacts
@@ -149,21 +165,21 @@ mapping space/annotation/
 For full RL generation, EmoSENSE needs:
 
 ```text
-projection/cube_projection_weights.pth
-projection/emotion_prototypes.pt
-projection/prototypes.pkl
-projection/mapping_metadata.json
-docs/Clip_emotion_classifier.pth
+projection/
+├── cube_projection_weights.pth
+├── emotion_prototypes.pt
+├── prototypes.pkl
+└── mapping_metadata.json
+docs/
+└── Clip_emotion_classifier.pth
 ```
 
-You can obtain `projection/*` by running Step 2. The reward classifier `docs/Clip_emotion_classifier.pth` should be placed under `docs/`; publish or download it through the project [GitHub Releases](https://github.com/Junyiggg/EmoSENSE/releases) if you do not keep it locally.
-
----
+You can obtain `projection/*` by running Step 2. Place `docs/Clip_emotion_classifier.pth` under `docs/`; publish or download it through the project [GitHub Releases](https://github.com/Junyiggg/EmoSENSE/releases) if you do not keep it locally.
 
 ## 🧭 Step 2. Train the Sentiment-Semantic Mapping Space
 
 <p align="center">
-  <img src="assets/training.svg" alt="Mapping space training" width="78%">
+  <img src="assets/training.png" alt="Mapping space training" width="78%">
 </p>
 
 Train the BGE prototype centroids and the VAD projection network:
@@ -181,7 +197,7 @@ python -m emosense.cli train-mapping \
   --device cuda
 ```
 
-For a quick smoke test:
+For a quick training smoke test:
 
 ```bash
 python -m emosense.cli train-mapping \
@@ -202,13 +218,7 @@ python -m emosense.cli inspect \
   --device cuda
 ```
 
-The output includes:
-
-- `correlation`: Euclidean distance from projected object to the target VAD vertex.
-- `gamma`: `exp(-correlation)`, used as the stability coefficient.
-- `closest_objects`: top-K emotion-specific references with brightness/colorfulness.
-
----
+The output includes `correlation`, `gamma`, the projected object coordinate, and the top-K emotion-specific references with brightness/colorfulness attributes.
 
 ## 🎨 Step 3. Reinforcement Learning Image Generation
 
@@ -227,7 +237,7 @@ python -m emosense.cli generate \
   --device cuda
 ```
 
-If you use ModelScope/Hugging Face cache instead of local folders:
+If you use ModelScope or Hugging Face cache instead of local folders:
 
 ```bash
 python -m emosense.cli generate \
@@ -246,11 +256,11 @@ Expected output:
 
 ```text
 runs/amusement_park/
-  episode_01_step_01.png
-  episode_01_step_02.png
-  ...
-  episode_01_rewards.jsonl
-  summary.json
+├── episode_01_step_01.png
+├── episode_01_step_02.png
+├── ...
+├── episode_01_rewards.jsonl
+└── summary.json
 ```
 
 Use dry-run mode to validate mapping, fuzzy initialization, prompt assembly, and RL updates without loading OmniGen or CLIP:
@@ -264,85 +274,23 @@ python -m emosense.cli generate \
   --device cuda
 ```
 
----
-
-## Paper Examples
-
-Qualitative comparison examples from the paper:
-
-<p align="center">
-  <img src="assets/qualitative-comparison.svg" alt="Qualitative comparison" width="100%">
-</p>
-
-Same-object emotion control examples:
-
-<p align="center">
-  <img src="assets/same-object.svg" alt="Same object comparison" width="100%">
-</p>
-
-Run the Fig. 5 examples manually:
-
-```bash
-python -m emosense.cli generate --object "park" --emotion amusement --output-dir runs/amusement_park --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "lake" --emotion awe --output-dir runs/awe_lake --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "dog" --emotion anger --output-dir runs/anger_dog --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "picnic" --emotion contentment --output-dir runs/contentment_picnic --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "landfill" --emotion disgust --output-dir runs/disgust_landfill --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "monster" --emotion fear --output-dir runs/fear_monster --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "concert" --emotion excitement --output-dir runs/excitement_concert --inference-steps 50 --device cuda
-python -m emosense.cli generate --object "cemetery" --emotion sadness --output-dir runs/sadness_cemetery --inference-steps 50 --device cuda
-```
-
----
-
-## Paper-Aligned Defaults
-
-| Component | Default |
-|---|---|
-| Emotion order | `amusement, awe, contentment, excitement, anger, disgust, fear, sadness` |
-| VAD vertices | Table II from the paper |
-| Top-K references | `5` |
-| Prompt LLM | `Qwen/Qwen2.5-3B-Instruct` |
-| Prompt length | `max_new_tokens=50` |
-| Image generator | `Shitao/OmniGen-v1` |
-| Image size | `512x512` |
-| Guidance scale | `2.5` |
-| Inference steps | `50` |
-| RL discount | `lambda=0.95` |
-| Low-level reward | `alpha*Rclip + beta*Remo + gamma*Rstable` |
-| Stability reward | `exp(-sqrt(mean(||s_t - s_{t-1}||_2^2)))` |
-
----
-
 ## Tests
+
+Step 3 runs the actual generation workflow. The commands below only check installation and core Python modules before heavy model loading.
 
 ```bash
 python -m unittest discover -s tests
+python -m emosense.cli --help
 ```
-
-End-to-end smoke test:
-
-```bash
-python -m emosense.cli inspect --object "house" --emotion sadness --device cuda
-python -m emosense.cli generate \
-  --object "house" \
-  --emotion sadness \
-  --device cuda \
-  --low-steps 1 \
-  --inference-steps 10
-```
-
-Full paper-style generation should use `--inference-steps 50`.
-
----
-
-## Notes for GitHub Users
-
-- Do not commit local model weights, EmoSet annotations, generated images, or `__pycache__`.
-- Store large artifacts in GitHub Releases, Hugging Face, ModelScope, or another artifact host.
-- If you use Git LFS, `.gitattributes` already marks common model formats.
-- CPU generation is possible but impractically slow for OmniGen; use an NVIDIA CUDA GPU for real experiments.
 
 ## Citation
 
-If this repository is useful for your research, please cite the EmoSENSE paper and the upstream models/datasets used by your experiments.
+```bibtex
+@article{guo2026emosense, 
+  title={EmoSENSE: Modeling Sentiment-Semantic Knowledge with Hierarchical Reinforcement Learning for Emotional Image Generation},
+  author={Guo, Junyi and Chen, Hongjun and Wang, Qiufeng and Chen, Yaran and Cheng, Guangliang and Wu, Fangyu and Lim, Eng Gee},
+  journal={IEEE Transactions on Affective Computing},
+  year={2026},
+  publisher={IEEE}
+}
+```
