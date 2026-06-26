@@ -2,6 +2,10 @@
 
 Emotional image generation aims to create images that effectively reflect target emotions. A fundamental challenge in this task is the affective gap, which refers to the discrepancy between visual content and emotional states perceived by users.
 
+<p align="center">
+  <img src="assets/demo.png" alt="EmoSENSE emotional image generation examples" width="78%">
+</p>
+
 We propose **EmoSENSE**, a sentiment-semantic knowledge modeling framework with hierarchical fuzzy reinforcement learning for emotional image generation. To improve generalization on uncommon emotion-object pairs, EmoSENSE projects emotions and objects into a unified VAD space and computes sentiment-semantic correlation with a prototype network. To improve controllability over emotion-related visual appearance, EmoSENSE refines brightness and colorfulness fuzzy memberships with hierarchical reinforcement learning before building the final generation prompt.
 
 ## Overview
@@ -13,10 +17,6 @@ Overview of our proposed method, mainly consisting of high-level and low-level m
 </p>
 
 ## Examples
-
-<p align="center">
-  <img src="assets/demo.png" alt="EmoSENSE emotional image generation examples" width="78%">
-</p>
 
 Qualitative comparison examples from the paper:
 
