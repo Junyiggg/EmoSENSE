@@ -60,12 +60,7 @@ pip install -r requirements.txt
 pip install -e .
 ```
 
-If your PyTorch CUDA build does not match your GPU driver, install the correct PyTorch wheel first, then rerun `pip install -r requirements.txt`.
 
-```bash
-# Example for CUDA 11.8
-pip install torch==2.3.1 torchvision==0.18.1 --index-url https://download.pytorch.org/whl/cu118
-```
 
 
 ## 📦 Step 1. Install Required Models and Data
